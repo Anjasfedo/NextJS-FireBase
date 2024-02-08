@@ -1,16 +1,15 @@
-// GoogleSignIn.js
 
 import React, { useEffect, useState } from "react";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "@/lib/config";
-
-const app = initializeApp(firebaseConfig);
+import { Button } from "../ui/button";
+import { TypographyH1 } from "../ui/typograpy";
+import Image from "next/image";
 
 const GoogleSignIn = () => {
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
+    const [user, setUser] = useState();
+    const [error, setError] = useState();
 
     const auth = getAuth();
 
@@ -20,9 +19,10 @@ const GoogleSignIn = () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
+            // const token = credential?.accessToken;
             const signedInUser = result.user;
             setUser(signedInUser);
+            console.log(signedInUser);
         } catch (error) {
             setError(error);
         }
@@ -31,27 +31,27 @@ const GoogleSignIn = () => {
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            setUser(null); // Clear user state on successful sign-out
+            setUser(null);
         } catch (error) {
             setError(error);
         }
     };
 
-    useEffect(() => {
-        console.log(user)
-    }, [isError]);
+    // useEffect(() => {
+    //     console.log(user)
+    // }, [isError]);
 
     return (
         <div>
             {user ? (
-                <div>
-                    <p>Welcome, {user.displayName}!</p>
-                    <p>Email: {user.email}</p>
-                    <img src={user.photoURL} alt="User" />
-                    <button onClick={handleSignOut}>Logout</button>
+                <div className="flex justify-center items-center flex-col gap-4">
+                    <TypographyH1>Welcome, {user.displayName}</TypographyH1>
+                    {/* <TypographyH1>Email: {user.email}</TypographyH1> */}
+                    <Image src={user.photoURL} alt="User" width={100} height={100} />
+                    <Button onClick={handleSignOut}>Logout</Button>
                 </div>
             ) : (
-                <button onClick={handleSignIn}>Sign in with Google</button>
+                <Button onClick={handleSignIn}>Sign in with Google</Button>
             )}
 
             {error && (
