@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import GoogleSignIn from '@/components/fragments/authFireBase';
-import { useState, useEffect } from 'react';
+import { UserContext } from "@/lib/context";
+import { Button } from "@/components/ui/button";
+import UserInfo from "@/components/fragments/UserInfo";
+import useLoginGoogle from "@/custom-hooks/useLoginGoogle";
 
 export default function Home() {
-  
-  return (
-    <main className="flex flex-col items-center justify-between min-h-screen py-40 mx-auto max-w-7xl">
-      <div className="relative isolate">
-        <GoogleSignIn />
-      </div>
-    </main>
-  );
+    const [user, error, handleLogin, handleLogout] = useLoginGoogle();
+
+    return (
+        <>
+            <header className="flex justify-evenly px-2 py-4"></header>
+            <UserContext.Provider value={[user, handleLogout]}>
+                <main className="flex flex-col items-center justify-between">
+                    {user ? <UserInfo /> : <Button onClick={handleLogin}>Sign in with Google</Button>}
+                </main>
+            </UserContext.Provider>
+            <footer></footer>
+        </>
+    );
 }
