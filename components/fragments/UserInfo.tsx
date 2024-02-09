@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import Image from "next/image";
 import { TypographyH4, TypographyP } from "@/components/ui/typograph";
 import { Button } from "../ui/button";
-import { UserContext } from "@/lib/context";
+import { useAuth } from "@/lib/context";
 
 const UserInfo = () => {
-    const [user, handleLogout] = useContext(UserContext);
+    const { user, handleLogin, handleLogout } = useAuth();
     
     return (
         <div className="flex justify-center items-center flex-col gap-4">

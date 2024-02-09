@@ -6,14 +6,8 @@ import { app } from "@/lib/config";
 
 type UseLoginGoogle = [string | null, string | null, () => void, () => void];
 
-type User = {
-    displayName: string | null;
-    email: string | null;
-    photoURL: string | null;
-};
-
 const useLoginGoogle = (): UseLoginGoogle => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserT | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const auth = getAuth(app);
