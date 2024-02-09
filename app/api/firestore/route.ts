@@ -1,25 +1,23 @@
 import { app } from "@/lib/config";
 import { getFirestore } from "firebase/firestore";
-import { collection, addDoc, Timestamp, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
 const db = getFirestore(app);
 
 export async function GET() {
-    let data = []
-    const q = query(collection(db, "task"), orderBy("createAt", "desc"));
+    const taskCollectionRef = collection(db, 'task');
+    const snapshot = await getDocs(taskCollectionRef);
 
-    await onSnapshot(q, (querySnapshot) => {
-        querySnapshot.docs.forEach((doc) => {
-            data.push({...doc.data(), id: doc.id})
+    const tasks = [];
+    snapshot.forEach(doc => {
+        tasks.push({
+            id: doc.id,
+            ...doc.data()
         });
-
-        console.log(data);
     });
 
-    console.log(data);
-
-    return NextResponse.json({data})
+    return NextResponse.json({tasks})
 }
 
 export async function POST(request: Request) {
