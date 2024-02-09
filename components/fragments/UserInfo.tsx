@@ -9,9 +9,9 @@ const UserInfo = () => {
     
     return (
         <div className="flex justify-center items-center flex-col gap-4">
-            <TypographyH4>Welcome, {user.displayName}</TypographyH4>
-            <TypographyP>{user.email}</TypographyP>
-            <Image src={user.photoURL} alt="User" width={100} height={100} />
+            <TypographyH4>Welcome, {user?.displayName}</TypographyH4>
+            <TypographyP>{user?.email}</TypographyP>
+            <Image src={user?.photoURL} alt="User" width={100} height={100} />
             <Button onClick={handleLogout}>Logout</Button>
         </div>
     );

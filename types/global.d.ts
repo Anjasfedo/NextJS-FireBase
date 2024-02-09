@@ -6,6 +6,6 @@ declare global {
         email: string | null;
         photoURL: string | null;
     };
-
     
+    type ErrorT = string | null;
 }
