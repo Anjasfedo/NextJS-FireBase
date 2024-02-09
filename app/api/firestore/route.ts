@@ -1,16 +1,25 @@
 import { app } from "@/lib/config";
 import { getFirestore } from "firebase/firestore";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
 const db = getFirestore(app);
 
-type ResponseData = {
-    message: string;
-};
-
 export async function GET() {
-    return NextResponse.json({ anjas: "anjas" });
+    let data = []
+    const q = query(collection(db, "task"), orderBy("createAt", "desc"));
+
+    await onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+            data.push({...doc.data(), id: doc.id})
+        });
+
+        console.log(data);
+    });
+
+    console.log(data);
+
+    return NextResponse.json({data})
 }
 
 export async function POST(request: Request) {
@@ -23,9 +32,9 @@ export async function POST(request: Request) {
             createAt: Timestamp.now(),
         });
 
-        return NextResponse.json({status: 200});
+        return NextResponse.json({ status: 200 });
     } catch (error) {
-        return NextResponse.json({status: 400});
+        return NextResponse.json({ status: 400 });
     }
 }
 
