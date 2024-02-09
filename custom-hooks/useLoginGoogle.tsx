@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { app } from "@/lib/config";
 
-type UseLoginGoogle = [string | null, string | null, () => void, () => void];
+type UseLoginGoogleT = [UserT | null, ErrorT, () => void, () => void];
 
-type User = {
-    displayName: string | null;
-    email: string | null;
-    photoURL: string | null;
-};
-
-const useLoginGoogle = (): UseLoginGoogle => {
-    const [user, setUser] = useState<User | null>(null);
-    const [error, setError] = useState<string | null>(null);
+const useLoginGoogle = (): UseLoginGoogleT => {
+    const [user, setUser] = useState<UserT | null>(null);
+    const [error, setError] = useState<ErrorT>(null);
 
     const auth = getAuth(app);
 
@@ -28,7 +22,7 @@ const useLoginGoogle = (): UseLoginGoogle => {
             const signedInUser = result.user;
             setUser(signedInUser);
         } catch (error) {
-            setError(error);
+            setError(error instanceof Error ? error.message : String(error));
         }
     };
 
@@ -37,7 +31,7 @@ const useLoginGoogle = (): UseLoginGoogle => {
             await signOut(auth);
             setUser(null);
         } catch (error) {
-            setError(error);
+            setError(error instanceof Error ? error.message : String(error));
         }
     };
 
