@@ -3,21 +3,41 @@ import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
+type CreateAt = {
+    seconds: number;
+    nanoseconds: number;
+};
+
+type DataType = {
+    title: string;
+    name: string;
+    createAt: CreateAt
+};
+
+type TaskData = DataType & {
+    id: string;
+};
+
+type Doc = {
+    id: string
+    data: () => any
+};
+
 const db = getFirestore(app);
 
 export async function GET() {
-    const taskCollectionRef = collection(db, 'task');
+    const taskCollectionRef = collection(db, "task");
     const snapshot = await getDocs(taskCollectionRef);
 
-    const tasks = [];
-    snapshot.forEach(doc => {
+    const tasks: TaskData[] = [];
+    snapshot.forEach((doc: Doc) => {
         tasks.push({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
         });
     });
 
-    return NextResponse.json({tasks})
+    return NextResponse.json({ tasks });
 }
 
 export async function POST(request: Request) {
