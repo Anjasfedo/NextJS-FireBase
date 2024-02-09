@@ -1,5 +1,4 @@
-import { app } from "@/lib/config";
-import { getFirestore } from "firebase/firestore";
+import { db } from "@/lib/config";
 import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,10 +22,10 @@ type Doc = {
     data: () => any
 };
 
-const db = getFirestore(app);
 
 export async function GET() {
     const taskCollectionRef = collection(db, "task");
+    
     const snapshot = await getDocs(taskCollectionRef);
 
     const tasks: TaskData[] = [];
@@ -54,8 +53,4 @@ export async function POST(request: Request) {
     } catch (error) {
         return NextResponse.json({ status: 400 });
     }
-}
-
-export async function UPDATE(request: Request, context: any) {
-    const { params } = context;
 }
